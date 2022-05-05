@@ -24,6 +24,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  *  },
  *  normalizationContext = {
  *      "groups" = {"invoices_read"}
+ *  },
+ *  denormalizationContext = {
+ *      "disable_type_enforcement" = true
  *  }
  * )
  */
@@ -98,7 +101,7 @@ class Invoice
         return $this->amount;
     }
 
-    public function setAmount(float $amount): self
+    public function setAmount($amount): self
     {
         $this->amount = $amount;
 
@@ -146,7 +149,7 @@ class Invoice
         return $this->chrono;
     }
 
-    public function setChrono(int $chrono): self
+    public function setChrono($chrono): self
     {
         $this->chrono = $chrono;
 
