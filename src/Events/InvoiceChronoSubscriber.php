@@ -39,7 +39,7 @@ class InvoiceChronoSubscriber implements EventSubscriberInterface
             // à déplacer dans une class dédié
             if (empty($result->getSentAt())) {
                 $result->setSentAt(new \DateTime());
-            }dd($result);
+            }
         }
     }
 }
