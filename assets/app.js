@@ -6,15 +6,26 @@
  */
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 
 // any CSS you import will output into a single css file (app.css in this case)
 import './styles/app.css';
 
 // start the Stimulus application
 import './bootstrap';
+import Navbar from './js/components/Navbar';
+import HomePage from './js/pages/HomePage';
 
 console.log("hello word !!!");
 
 const App = () => {
-    return <h1>Bonjour à tous !</h1>
-}
+    return <>
+        <Navbar />
+        <div className="container pt-5">
+            <HomePage />
+        </div>
+    </>
+};
+
+const rootElement = document.querySelector('#app');
+ReactDOM.render(<App />, rootElement);
