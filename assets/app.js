@@ -15,16 +15,21 @@ import './styles/app.css';
 import './bootstrap';
 import Navbar from './js/components/Navbar';
 import HomePage from './js/pages/HomePage';
+import CustomersPage from './js/pages/CustomersPage';
+import { HashRouter, Switch, Route } from 'react-router-dom';
 
 console.log("hello word !!!");
 
 const App = () => {
-    return <>
+    return <HashRouter>
         <Navbar />
-        <div className="container pt-5">
-            <HomePage />
-        </div>
-    </>
+        <main className="container pt-5">
+            <Switch>
+                <Route path="/customers" component={CustomersPage} />
+                <Route path="/" component={HomePage} />
+            </Switch>
+        </main>
+    </HashRouter>
 };
 
 const rootElement = document.querySelector('#app');
