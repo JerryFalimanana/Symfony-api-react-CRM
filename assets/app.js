@@ -18,8 +18,6 @@ import HomePage from './js/pages/HomePage';
 import CustomersPage from './js/pages/CustomersPage';
 import { HashRouter, Switch, Route } from 'react-router-dom';
 
-console.log("hello word !!!");
-
 const App = () => {
     return <HashRouter>
         <Navbar />
