@@ -13,8 +13,15 @@ const CustomersPage = (props) => {
     }, [])
 
     const handleDelete = id => {
-        console.log(id);
-        axios.delete("http://127.0.0.1:8000/api/customers/" + id).then(response => console.log(response));
+        const originalCustomers = [...customers];
+        setCustomers(customers.filter(customer => customer.id !== id));
+        axios
+            .delete("http://127.0.0.1:8000/api/customers/" + id)
+            .then(response => console.log("ok"))
+            .catch(error => {
+                setCustomers(originalCustomers);
+                console.log(error.response);
+            });
     };
 
     return (
