@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import Axios from 'axios';
+import axios from 'axios';
 
 const CustomersPage = (props) => {
     const [customers, setCustomers] = useState([]);
 
     useEffect(() => {
-        Axios
+        axios
             .get("http://127.0.0.1:8000/api/customers")
             .then(response => response.data["hydra:member"])
             .then(data => setCustomers(data))
-            .catch(erron => console.log(error.response));
+            .catch(error => console.log(error.response));
     }, [])
+
+    const handleDelete = id => {
+        console.log(id);
+        axios.delete("http://127.0.0.1:8000/api/customers/" + id).then(response => console.log(response));
+    };
 
     return (
         <>
@@ -43,7 +48,7 @@ const CustomersPage = (props) => {
                             </td>
                             <td className='text-center'>{customer.totalAmount.toLocaleString()} €</td>
                             <td>
-                                <button className="btn btn-sm btn-danger">Supprimer</button>
+                                <button onClick={() => handleDelete(customer.id)} disabled={customer.invoices.length > 0} className="btn btn-sm btn-danger">Supprimer</button>
                             </td>
                         </tr>
                     )}
