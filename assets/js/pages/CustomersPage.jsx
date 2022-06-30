@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import Pagination from '../components/Pagination';
 
 const CustomersPage = (props) => {
     const [customers, setCustomers] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
         axios
@@ -24,6 +26,14 @@ const CustomersPage = (props) => {
             });
     };
 
+    const handlePageChange = page => {
+        setCurrentPage(page);
+    }
+
+    const itemsPerPage = 8;
+
+    const paginatedCustomers = Pagination.getData(customers, currentPage, itemsPerPage);
+
     return (
         <>
             <h1>Liste des clients</h1>
@@ -40,7 +50,7 @@ const CustomersPage = (props) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {customers.map(customer => 
+                    {paginatedCustomers.map(customer => 
                         <tr key={customer.id}>
                             <td> {customer.id} </td>
                             <td>
@@ -61,6 +71,7 @@ const CustomersPage = (props) => {
                     )}
                 </tbody>
             </table>
+            <Pagination currentPage={currentPage} itemsPerPage={itemsPerPage} length={customers.length} onPageChanged={handlePageChange} />
         </>
      );
 }
