@@ -18,13 +18,15 @@ import HomePage from './js/pages/HomePage';
 import CustomersPage from './js/pages/CustomersPage';
 import CustomersWithPaginationPage from './js/pages/CustomersWithPaginationPage';
 import { HashRouter, Switch, Route } from 'react-router-dom';
+import InvoicesPage from './js/pages/InvoicesPage';
 
 const App = () => {
     return <HashRouter>
         <Navbar />
         <main className="container pt-5">
             <Switch>
-                <Route path="/customers" component={CustomersWithPaginationPage} />
+                <Route path="/invoices" component={InvoicesPage} />
+                <Route path="/customers" component={CustomersPage} />
                 <Route path="/" component={HomePage} />
             </Switch>
         </main>
