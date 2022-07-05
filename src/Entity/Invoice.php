@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *  },
  *  itemOperations = {"GET", "PUT", "DELETE", "iNCREMENT" = {"method"="post", "path"="invoices/{id}/increment", "controller"="App\Controller\InvoiceIncrementationController", "openapi_context"={"summary"="Incremente une facture", "description"="Incremente le chrono d'une facture donnée"}}},
  *  attributes = {
- *      "pagination_enabled" = true,
+ *      "pagination_enabled" = false,
  *      "pagination_items_per_page"= 5
  *  },
  *  normalizationContext = {
