@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { async } from 'regenerator-runtime';
+import AuthAPI from '../services/authAPI';
 
 const LoginPage = (props) => {
     const [credentials, setCredentials] = useState({
@@ -9,10 +9,8 @@ const LoginPage = (props) => {
     });
     const [error, setError] = useState("");
 
-    const handleChange = event => {
-        const value = event.currentTarget.value;
-        const name = event.currentTarget.name;
-
+    const handleChange = ({currentTarget}) => {
+        const {value, name} = currentTarget;
         setCredentials({...credentials, [name]: value});
     };
 
@@ -20,16 +18,11 @@ const LoginPage = (props) => {
         event.preventDefault();
         
         try {
-            const token = await axios.post("http://localhost:8000/api/login_check", credentials).then(response => response.data.token);
+            await AuthAPI.authenticate(credentials);
             setError("");
-            window.localStorage.setItem("authToken", token);
-
-            axios.defaults.headers["Authorization"] = "Bearer " + token;
         } catch(error) {
             setError("Aucun compte ne possède cette adresse.");
         }
-
-        console.log(credentials);
     };
 
     return ( 
