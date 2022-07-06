@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Pagination from '../components/Pagination';
 import axios from 'axios';
 import moment from 'moment';
-import InvoicesAPI from '../services/invcoicesAPI';
+import InvoicesAPI from '../services/invoicesAPI';
 
 const STATUS_CLASSES = {
     PAID: "success",
