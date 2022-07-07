@@ -5,7 +5,7 @@
  * (and its CSS file) in your base layout (base.html.twig).
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 
 // any CSS you import will output into a single css file (app.css in this case)
@@ -25,11 +25,15 @@ import AuthAPI from './js/services/authAPI';
 AuthAPI.setup();
 
 const App = () => {
+    const [isAuthenticated, setIsAuthenticated] = useState(true);
+
     return <HashRouter>
-        <Navbar />
+        <Navbar isAuthenticated={isAuthenticated} onLogout={setIsAuthenticated} />
         <main className="container pt-5">
             <Switch>
-                <Route path="/login" component={LoginPage} />
+                <Route path="/login" render={ props => (
+                    <LoginPage onLogin={setIsAuthenticated} />
+                ) } />
                 <Route path="/invoices" component={InvoicesPage} />
                 <Route path="/customers" component={CustomersPage} />
                 <Route path="/" component={HomePage} />
