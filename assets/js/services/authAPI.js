@@ -25,6 +25,18 @@ function setup() {
     }
 }
 
+function isAuthenticated() {
+    const token = window.localStorage.getItem("authToken");
+    if (token) {
+        const {exp: expiration} = jwtDecode(token);
+        if (expiration * 1000 > new Date().getTime()) {
+            return true;
+        }
+        return false;
+    }
+    return false;
+}
+
 function setAxiosToken(token) {
     axios.defaults.headers["Authorization"] = "Bearer " + token;
 }
@@ -32,5 +44,6 @@ function setAxiosToken(token) {
 export default {
     authenticate,
     logout,
-    setup
+    setup,
+    isAuthenticated
 };
