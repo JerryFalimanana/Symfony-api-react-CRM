@@ -5,7 +5,7 @@
  * (and its CSS file) in your base layout (base.html.twig).
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 
 // any CSS you import will output into a single css file (app.css in this case)
@@ -17,16 +17,22 @@ import Navbar from './js/components/Navbar';
 import HomePage from './js/pages/HomePage';
 import CustomersPage from './js/pages/CustomersPage';
 import CustomersWithPaginationPage from './js/pages/CustomersWithPaginationPage';
-import { HashRouter, Switch, Route } from 'react-router-dom';
+import { HashRouter, Switch, Route, withRouter } from 'react-router-dom';
 import InvoicesPage from './js/pages/InvoicesPage';
 import LoginPage from './js/pages/LoginPage';
+import AuthAPI from './js/services/authAPI';
+
+AuthAPI.setup();
 
 const App = () => {
+    const [isAuthenticated, setIsAuthenticated] = useState(AuthAPI.isAuthenticated());
+    const NavbarWithRouter = withRouter(Navbar);
+
     return <HashRouter>
-        <Navbar />
+        <NavbarWithRouter isAuthenticated={isAuthenticated} onLogout={setIsAuthenticated} />
         <main className="container pt-5">
             <Switch>
-                <Route path="/login" component={LoginPage} />
+                <Route path="/login" render={ props => <LoginPage onLogin={setIsAuthenticated} {...props} /> } />
                 <Route path="/invoices" component={InvoicesPage} />
                 <Route path="/customers" component={CustomersPage} />
                 <Route path="/" component={HomePage} />
