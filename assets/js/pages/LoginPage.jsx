@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { async } from 'regenerator-runtime';
 import AuthAPI from '../services/authAPI';
 
-const LoginPage = (props) => {
+const LoginPage = ({ onLogin, history }) => {
     const [credentials, setCredentials] = useState({
         username: "",
         password: ""
@@ -20,6 +20,8 @@ const LoginPage = (props) => {
         try {
             await AuthAPI.authenticate(credentials);
             setError("");
+            onLogin(true);
+            history.replace("/customers");
         } catch(error) {
             setError("Aucun compte ne possède cette adresse.");
         }
