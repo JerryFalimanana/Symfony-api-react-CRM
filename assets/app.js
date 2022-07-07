@@ -20,6 +20,9 @@ import CustomersWithPaginationPage from './js/pages/CustomersWithPaginationPage'
 import { HashRouter, Switch, Route } from 'react-router-dom';
 import InvoicesPage from './js/pages/InvoicesPage';
 import LoginPage from './js/pages/LoginPage';
+import AuthAPI from './js/services/authAPI';
+
+AuthAPI.setup();
 
 const App = () => {
     return <HashRouter>
