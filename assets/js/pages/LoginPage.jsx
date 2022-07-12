@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { async } from 'regenerator-runtime';
+import AuthContext from '../contexts/AuthContext';
 import AuthAPI from '../services/authAPI';
 
-const LoginPage = ({ onLogin, history }) => {
+const LoginPage = ({  history }) => {
+    const {setIsAuthenticated} = useContext(AuthContext);
+
     const [credentials, setCredentials] = useState({
         username: "",
         password: ""
@@ -20,7 +23,7 @@ const LoginPage = ({ onLogin, history }) => {
         try {
             await AuthAPI.authenticate(credentials);
             setError("");
-            onLogin(true);
+            setIsAuthenticated(true);
             history.replace("/customers");
         } catch(error) {
             setError("Aucun compte ne possède cette adresse.");
