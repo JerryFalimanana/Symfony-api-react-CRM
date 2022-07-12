@@ -17,12 +17,17 @@ import Navbar from './js/components/Navbar';
 import HomePage from './js/pages/HomePage';
 import CustomersPage from './js/pages/CustomersPage';
 import CustomersWithPaginationPage from './js/pages/CustomersWithPaginationPage';
-import { HashRouter, Switch, Route, withRouter } from 'react-router-dom';
+import { HashRouter, Switch, Route, withRouter, Redirect } from 'react-router-dom';
 import InvoicesPage from './js/pages/InvoicesPage';
 import LoginPage from './js/pages/LoginPage';
 import AuthAPI from './js/services/authAPI';
 
 AuthAPI.setup();
+
+const PrivateRoute = ({ path, isAuthenticated, component }) => 
+    isAuthenticated ? 
+        <Route path={path} component={component} /> : 
+        <Redirect to="/login" />
 
 const App = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(AuthAPI.isAuthenticated());
@@ -33,8 +38,8 @@ const App = () => {
         <main className="container pt-5">
             <Switch>
                 <Route path="/login" render={ props => <LoginPage onLogin={setIsAuthenticated} {...props} /> } />
-                <Route path="/invoices" component={InvoicesPage} />
-                <Route path="/customers" component={CustomersPage} />
+                <PrivateRoute path="/invoices" isAuthenticated={isAuthenticated} component={InvoicesPage} />
+                <PrivateRoute path="/customers" isAuthenticated={isAuthenticated} component={CustomersPage} />
                 <Route path="/" component={HomePage} />
             </Switch>
         </main>
