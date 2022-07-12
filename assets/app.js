@@ -5,44 +5,35 @@
  * (and its CSS file) in your base layout (base.html.twig).
  */
 
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 
 // any CSS you import will output into a single css file (app.css in this case)
 import './styles/app.css';
 
 // start the Stimulus application
+import { HashRouter, Route, Switch, withRouter } from 'react-router-dom';
 import './bootstrap';
 import Navbar from './js/components/Navbar';
-import HomePage from './js/pages/HomePage';
+import PrivateRoute from './js/components/PrivateRoute';
+import AuthContext from './js/contexts/AuthContext';
 import CustomersPage from './js/pages/CustomersPage';
-import CustomersWithPaginationPage from './js/pages/CustomersWithPaginationPage';
-import { HashRouter, Switch, Route, withRouter, Redirect } from 'react-router-dom';
+import HomePage from './js/pages/HomePage';
 import InvoicesPage from './js/pages/InvoicesPage';
 import LoginPage from './js/pages/LoginPage';
 import AuthAPI from './js/services/authAPI';
-import AuthContext from './js/contexts/AuthContext';
 
 AuthAPI.setup();
-
-const PrivateRoute = ({ path, component }) => {
-    const {isAuthenticated} = useContext(AuthContext);
-
-    return isAuthenticated ? 
-        <Route path={path} component={component} /> : 
-        <Redirect to="/login" />
-}
 
 const App = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(AuthAPI.isAuthenticated());
     const NavbarWithRouter = withRouter(Navbar);
-    const contextValue = {
-        isAuthenticated,
-        setIsAuthenticated
-    };
 
     return (
-        <AuthContext.Provider value={contextValue}>
+        <AuthContext.Provider value={{
+            isAuthenticated,
+            setIsAuthenticated
+        }}>
             <HashRouter>
                 <NavbarWithRouter />
                 <main className="container pt-5">
