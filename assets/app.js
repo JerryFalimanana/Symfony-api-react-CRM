@@ -22,6 +22,7 @@ import HomePage from './js/pages/HomePage';
 import InvoicesPage from './js/pages/InvoicesPage';
 import LoginPage from './js/pages/LoginPage';
 import AuthAPI from './js/services/authAPI';
+import CustomerPage from './js/pages/CustomerPage';
 
 AuthAPI.setup();
 
@@ -40,6 +41,7 @@ const App = () => {
                     <Switch>
                         <Route path="/login" component={ LoginPage } />
                         <PrivateRoute path="/invoices" component={InvoicesPage} />
+                        <PrivateRoute path="/customers/:id" component={CustomerPage} />
                         <PrivateRoute path="/customers" component={CustomersPage} />
                         <Route path="/" component={HomePage} />
                     </Switch>
