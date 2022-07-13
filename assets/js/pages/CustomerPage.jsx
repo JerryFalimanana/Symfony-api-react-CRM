@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Field from '../components/forms/Field';
 import axios from 'axios';
 import { async } from 'regenerator-runtime';
 
 const CustomerPage = (props) => {
+    const { id = "new" } = props.match.params;
+
     const [customer, setCustomer] = useState({
         lastName: "",
         firstName: "",
@@ -19,6 +21,26 @@ const CustomerPage = (props) => {
         company: ""
     });
 
+    const [editing, setEditing] = useState(false);
+
+    const fetchCustomer = async id => {
+        try {
+            const data = await axios.get("http://localhost:8000/api/customers/" + id)
+                                    .then(response => response.data);
+            const { firstName, lastName, email, company } = data;
+            setCustomer({ firstName, lastName, email, company });
+        } catch (error) {
+            console.log(error.response);
+        }
+    };
+
+    useEffect(() => {
+        if (id !== "new") {
+            setEditing(true);
+            fetchCustomer(id);
+        }
+    }, [id]);
+
     const handleChange = ({ currentTarget }) => {
         const { name, value } = currentTarget;
         setCustomer({...customer, [name]: value});
@@ -27,7 +49,12 @@ const CustomerPage = (props) => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const response = await axios.post("http://localhost:8000/api/customers", customer);
+            if (editing) {
+                const response = await axios.put("http://localhost:8000/api/customers/" + id, customer);
+                console.log(response.data);
+            } else {
+                const response = await axios.post("http://localhost:8000/api/customers", customer);
+            }
             setErrors({});
         } catch (error) {
             if (error.response.data.violations) {
@@ -42,7 +69,10 @@ const CustomerPage = (props) => {
 
     return ( 
         <>
-            <h1>Création d'un client</h1>
+            {!editing &&
+                <h1>Création d'un client</h1> ||
+                <h1>Modification d'un client</h1>
+            }
 
             <form onSubmit={handleSubmit}>
                 <Field 
