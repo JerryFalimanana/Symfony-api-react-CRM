@@ -51,9 +51,11 @@ const CustomerPage = (props) => {
         try {
             if (editing) {
                 const response = await axios.put("http://localhost:8000/api/customers/" + id, customer);
-                console.log(response.data);
+                // notification de succès
             } else {
                 const response = await axios.post("http://localhost:8000/api/customers", customer);
+                // notification de succès
+                props.history.replace("/customers");
             }
             setErrors({});
         } catch (error) {
@@ -63,6 +65,7 @@ const CustomerPage = (props) => {
                     apiErrors[violation.propertyPath] = violation.message;
                 });
                 setErrors(apiErrors);
+                // notification des erreurs
             }
         }
     };
