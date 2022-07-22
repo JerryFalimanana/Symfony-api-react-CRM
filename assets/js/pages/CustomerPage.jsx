@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Field from '../components/forms/Field';
-import axios from 'axios';
 import { async } from 'regenerator-runtime';
+import customersAPI from '../services/customersAPI';
 
-const CustomerPage = (props) => {
-    const { id = "new" } = props.match.params;
+const CustomerPage = ({ match, history }) => {
+    const { id = "new" } = match.params;
 
     const [customer, setCustomer] = useState({
         lastName: "",
@@ -25,12 +25,11 @@ const CustomerPage = (props) => {
 
     const fetchCustomer = async id => {
         try {
-            const data = await axios.get("http://localhost:8000/api/customers/" + id)
-                                    .then(response => response.data);
-            const { firstName, lastName, email, company } = data;
+            const { firstName, lastName, email, company } = await customersAPI.find(id);
             setCustomer({ firstName, lastName, email, company });
         } catch (error) {
-            console.log(error.response);
+            // notification flash d'une erreur
+            history.replace("/customers");
         }
     };
 
@@ -50,19 +49,20 @@ const CustomerPage = (props) => {
         event.preventDefault();
         try {
             if (editing) {
-                const response = await axios.put("http://localhost:8000/api/customers/" + id, customer);
+                await customersAPI.update(id, customer);
                 // notification de succès
             } else {
-                const response = await axios.post("http://localhost:8000/api/customers", customer);
+                await customersAPI.create(customer);
                 // notification de succès
-                props.history.replace("/customers");
+                history.replace("/customers");
             }
             setErrors({});
-        } catch (error) {
-            if (error.response.data.violations) {
+        } catch ({ response }) {
+            const { violations } = response.data;
+            if (violations) {
                 const apiErrors = {};
-                error.response.data.violations.forEach(violation => {
-                    apiErrors[violation.propertyPath] = violation.message;
+                violations.forEach(({ propertyPath, message }) => {
+                    apiErrors[propertyPath] = message;
                 });
                 setErrors(apiErrors);
                 // notification des erreurs
