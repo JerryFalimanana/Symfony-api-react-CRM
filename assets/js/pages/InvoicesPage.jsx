@@ -3,6 +3,7 @@ import Pagination from '../components/Pagination';
 import axios from 'axios';
 import moment from 'moment';
 import InvoicesAPI from '../services/invoicesAPI';
+import { Link } from 'react-router-dom';
 
 const STATUS_CLASSES = {
     PAID: "success",
@@ -55,13 +56,20 @@ const InvoicesPage = (props) => {
 
     const formatDate = (str) => moment(str).format('DD/MM/YYYY');
 
-    const filteredInvoices = invoices.filter(i => i.customer.firstName.toLowerCase().includes(search.toLowerCase()) || i.customer.lastName.toLowerCase().includes(search.toLowerCase()) || i.amount.toString().includes(search.toLowerCase()) || STATUS_LABELS[i.status].toLowerCase().includes(search.toLowerCase()));
+    const filteredInvoices = invoices.filter(i => 
+        i.customer.firstName.toLowerCase().includes(search.toLowerCase()) || 
+        i.customer.lastName.toLowerCase().includes(search.toLowerCase()) || 
+        i.amount.toString().includes(search.toLowerCase()) || 
+        STATUS_LABELS[i.status].toLowerCase().includes(search.toLowerCase()));
 
     const paginatedInvoices = Pagination.getData(filteredInvoices, currentPage, itemsPerPage);
 
     return ( 
         <>
-            <h1>Liste des factures</h1>
+            <div className="d-flex justify-content-between align-items-center">
+                <h1>Liste des factures</h1>
+                <Link className='btn btn-primary' to="/invoices/new">Créer une facture</Link>
+            </div>
 
             <div className="form-group">
                 <input type="text" onChange={handleSearch} value={search} className="form-control" placeholder="Rechercher ..." />
