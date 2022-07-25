@@ -1,15 +1,15 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { async } from 'regenerator-runtime';
 import Field from '../components/forms/Field';
 import Select from '../components/forms/Select';
 import customersAPI from '../services/customersAPI';
 
-const InvoicePage = (props) => {
+const InvoicePage = ({history}) => {
     const [invoice, setInvoice] = useState({
         amount: "",
         customer: "",
-        status: ""
+        status: "SENT"
     });
 
     const [customers, setCustomers] = useState([]);
@@ -22,7 +22,9 @@ const InvoicePage = (props) => {
 
     const fetchCustomers = async () => {
         try {
-            setCustomers(await customersAPI.findAll());
+            const data = await customersAPI.findAll();
+            setCustomers(data);
+            if (!invoice.customer) setInvoice({...invoice, customer: data[0].id});
         } catch (error) {
             console.log(error.response);
         };
@@ -37,10 +39,29 @@ const InvoicePage = (props) => {
         setInvoice({...invoice, [name]: value});
     };
 
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        try {
+            const response = await axios.post("http://localhost:8000/api/invoices", {...invoice, customer: `/api/customers/${invoice.customer}`});
+            // Flash notification succes
+            history.replace("/invoices");
+        } catch ({ response }) {
+            const { violations } = response.data;
+            if (violations) {
+                const apiErrors = {};
+                violations.forEach(({ propertyPath, message }) => {
+                    apiErrors[propertyPath] = message;
+                });
+                setErrors(apiErrors);
+                // notification des erreurs
+            }
+        }
+    }
+
     return ( 
         <>
             <h1>Création d'une facture</h1>
-            <form>
+            <form onSubmit={handleSubmit}>
                 <Field 
                     name="amount"
                     type='number'
