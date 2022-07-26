@@ -7,5 +7,5 @@
 ### PHP ^7.1
 ### Symfony 4.4
 ### API Platform 2.6
-### React
+### React 16.8.6
 ### Composer
