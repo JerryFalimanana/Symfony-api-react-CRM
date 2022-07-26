@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import Field from '../components/forms/Field';
 import Select from '../components/forms/Select';
 import customersAPI from '../services/customersAPI';
+import invoicesAPI from '../services/invoicesAPI';
 
 const InvoicePage = ({ history, match }) => {
     const { id = "new" } = match.params;
@@ -13,7 +14,6 @@ const InvoicePage = ({ history, match }) => {
         customer: "",
         status: "SENT"
     });
-
     const [customers, setCustomers] = useState([]);
     const [editing, setEditing] = useState(false);
     const [errors, setErrors] = useState({
@@ -28,19 +28,18 @@ const InvoicePage = ({ history, match }) => {
             setCustomers(data);
             if (!invoice.customer) setInvoice({...invoice, customer: data[0].id});
         } catch (error) {
-            console.log(error.response);
+            // flash notification
+            history.replace("/invoices");
         };
     };
 
     const fetchInvoice = async id => {
         try {
-            const data = await axios
-                .get("http://localhost:8000/api/invoices/" + id)
-                .then(response => response.data);
-            const { amount, status, customer } = data;
+            const { amount, status, customer } = await invoicesAPI.find(id);
             setInvoice({ amount, status, customer: customer.id });
         } catch (error) {
-            console.log(error.response);
+            // flash notification
+            history.replace("/invoices");
         }
     };
 
@@ -64,11 +63,10 @@ const InvoicePage = ({ history, match }) => {
         event.preventDefault();
         try {
             if (editing) {
-                const response = await axios.put("http://localhost:8000/api/invoices/" + id, {...invoice, customer: `/api/customers/${invoice.customer}`});
+                await invoicesAPI.update(id, invoice);
                 // Flash notification succes
-                console.log(response);
             } else {
-                const response = await axios.post("http://localhost:8000/api/invoices", {...invoice, customer: `/api/customers/${invoice.customer}`});
+                await invoicesAPI.create(invoice);
                 // Flash notification succes
                 history.replace("/invoices");
             }
