@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import Pagination from '../components/Pagination';
-import axios from 'axios';
 import moment from 'moment';
-import InvoicesAPI from '../services/invoicesAPI';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import TableLoader from '../components/loaders/TableLoader';
+import Pagination from '../components/Pagination';
+import InvoicesAPI from '../services/invoicesAPI';
 
 const STATUS_CLASSES = {
     PAID: "success",
@@ -104,7 +103,7 @@ const InvoicesPage = (props) => {
                             <tr key={invoice.id}>
                                 <td>{invoice.chrono}</td>
                                 <td>
-                                    <a href="#">{invoice.customer.firstName} {invoice.customer.lastName}</a>
+                                    <Link to={"/customers/" + invoice.customer.id }>{invoice.customer.firstName} {invoice.customer.lastName}</Link>
                                 </td>
                                 <td className='text-center'>{formatDate(invoice.sentAt)}</td>
                                 <td className='text-center'>
