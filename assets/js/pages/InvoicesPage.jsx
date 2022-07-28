@@ -5,6 +5,7 @@ import moment from 'moment';
 import InvoicesAPI from '../services/invoicesAPI';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import TableLoader from '../components/loaders/TableLoader';
 
 const STATUS_CLASSES = {
     PAID: "success",
@@ -21,11 +22,13 @@ const InvoicesPage = (props) => {
     const [invoices, setInvoices] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [search, setSearch] = useState("");
+    const [loading, setLoading] = useState(true);
 
     const fetchInvoices = async () => {
         try {
             const data = await InvoicesAPI.findAll();
             setInvoices(data);
+            setLoading(false);
         } catch(error) {
             toast.error("Erreur lors du chargement des factures.", {
                 position: toast.POSITION.TOP_CENTER
@@ -95,26 +98,31 @@ const InvoicesPage = (props) => {
                         <th></th>
                     </tr>
                 </thead>
-                <tbody>
-                    {paginatedInvoices.map(invoice => 
-                        <tr key={invoice.id}>
-                            <td>{invoice.chrono}</td>
-                            <td>
-                                <a href="#">{invoice.customer.firstName} {invoice.customer.lastName}</a>
-                            </td>
-                            <td className='text-center'>{formatDate(invoice.sentAt)}</td>
-                            <td className='text-center'>
-                                <span className={"badge bg-" + STATUS_CLASSES[invoice.status]}>{STATUS_LABELS[invoice.status]}</span>
-                            </td>
-                            <td className='text-center'>{invoice.amount.toLocaleString()} €</td>
-                            <td>
-                                <Link to={"/invoices/" + invoice.id} className="btn btn-sm btn-primary">Editer</Link>
-                                <button className="btn btn-sm btn-danger" onClick={() => handleDelete(invoice.id)}>Supprimer</button>
-                            </td>
-                        </tr>
-                    )}
-                </tbody>
+                { !loading &&
+                    <tbody>
+                        {paginatedInvoices.map(invoice => 
+                            <tr key={invoice.id}>
+                                <td>{invoice.chrono}</td>
+                                <td>
+                                    <a href="#">{invoice.customer.firstName} {invoice.customer.lastName}</a>
+                                </td>
+                                <td className='text-center'>{formatDate(invoice.sentAt)}</td>
+                                <td className='text-center'>
+                                    <span className={"badge bg-" + STATUS_CLASSES[invoice.status]}>{STATUS_LABELS[invoice.status]}</span>
+                                </td>
+                                <td className='text-center'>{invoice.amount.toLocaleString()} €</td>
+                                <td>
+                                    <Link to={"/invoices/" + invoice.id} className="btn btn-sm btn-primary">Editer</Link>
+                                    <button className="btn btn-sm btn-danger" onClick={() => handleDelete(invoice.id)}>Supprimer</button>
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                 }
             </table>
+
+            { loading && <TableLoader /> }
+
             <Pagination currentPage={currentPage} itemsPerPage={itemsPerPage} onPageChanged={handlePageChange} length={filteredInvoices.length} />
         </>
      );
