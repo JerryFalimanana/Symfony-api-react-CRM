@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { async } from 'regenerator-runtime';
+import { toast } from 'react-toastify';
 import Field from '../components/forms/Field';
 import AuthContext from '../contexts/AuthContext';
 import AuthAPI from '../services/authAPI';
@@ -25,9 +25,15 @@ const LoginPage = ({  history }) => {
             await AuthAPI.authenticate(credentials);
             setError("");
             setIsAuthenticated(true);
+            toast.success("Vous etes désormais connecté.", {
+                position: toast.POSITION.TOP_CENTER
+            });
             history.replace("/customers");
         } catch(error) {
             setError("Aucun compte ne possède cette adresse.");
+            toast.error("Une erreur est survénue.", {
+                position: toast.POSITION.TOP_CENTER
+            });
         }
     };
 
