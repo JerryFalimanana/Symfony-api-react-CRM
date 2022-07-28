@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import Field from '../components/forms/Field';
-import { async } from 'regenerator-runtime';
 import customersAPI from '../services/customersAPI';
 
 const CustomerPage = ({ match, history }) => {
@@ -28,7 +28,9 @@ const CustomerPage = ({ match, history }) => {
             const { firstName, lastName, email, company } = await customersAPI.find(id);
             setCustomer({ firstName, lastName, email, company });
         } catch (error) {
-            // notification flash d'une erreur
+            toast.error("Le client n'a pas pu etre chargé.", {
+                position: toast.POSITION.TOP_CENTER
+            });
             history.replace("/customers");
         }
     };
@@ -48,15 +50,19 @@ const CustomerPage = ({ match, history }) => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
+            setErrors({});
             if (editing) {
                 await customersAPI.update(id, customer);
-                // notification de succès
+                toast.success("Le client a bien été modifié.", {
+                    position: toast.POSITION.TOP_CENTER
+                });
             } else {
                 await customersAPI.create(customer);
-                // notification de succès
+                toast.success("Le client a bien été créé.", {
+                    position: toast.POSITION.TOP_CENTER
+                });
                 history.replace("/customers");
             }
-            setErrors({});
         } catch ({ response }) {
             const { violations } = response.data;
             if (violations) {
@@ -65,7 +71,9 @@ const CustomerPage = ({ match, history }) => {
                     apiErrors[propertyPath] = message;
                 });
                 setErrors(apiErrors);
-                // notification des erreurs
+                toast.error("Des erreurs dans le formulaire.", {
+                    position: toast.POSITION.TOP_CENTER
+                });
             }
         }
     };

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 function findAll() {
-    return axios.get("http://127.0.0.1:8000/api/invoices")
+    return axios.get("http://localhost:8000/api/invoices")
                 .then(response => response.data["hydra:member"]);
 }
 
@@ -20,7 +20,7 @@ function update(id, invoice) {
 }
 
 function deleteInvoice(id) {
-    return axios.delete("http://127.0.0.1:8000/api/invoices/" + id);
+    return axios.delete("http://localhost:8000/api/invoices/" + id);
 }
 
 export default {
