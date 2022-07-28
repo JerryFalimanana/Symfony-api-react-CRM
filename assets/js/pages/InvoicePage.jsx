@@ -1,6 +1,6 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import Field from '../components/forms/Field';
 import Select from '../components/forms/Select';
 import customersAPI from '../services/customersAPI';
@@ -28,7 +28,9 @@ const InvoicePage = ({ history, match }) => {
             setCustomers(data);
             if (!invoice.customer) setInvoice({...invoice, customer: data[0].id});
         } catch (error) {
-            // flash notification
+            toast.error("Une erreur est survenue lors du chargement.", {
+                position: toast.POSITION.TOP_CENTER
+            });
             history.replace("/invoices");
         };
     };
@@ -38,7 +40,9 @@ const InvoicePage = ({ history, match }) => {
             const { amount, status, customer } = await invoicesAPI.find(id);
             setInvoice({ amount, status, customer: customer.id });
         } catch (error) {
-            // flash notification
+            toast.error("Une erreur est survenue lors du chargement.", {
+                position: toast.POSITION.TOP_CENTER
+            });
             history.replace("/invoices");
         }
     };
@@ -64,10 +68,14 @@ const InvoicePage = ({ history, match }) => {
         try {
             if (editing) {
                 await invoicesAPI.update(id, invoice);
-                // Flash notification succes
+                toast.success("La facture a bien été modifiée.", {
+                    position: toast.POSITION.TOP_CENTER
+                });
             } else {
                 await invoicesAPI.create(invoice);
-                // Flash notification succes
+                toast.success("La facture a bien été enregistrée.", {
+                    position: toast.POSITION.TOP_CENTER
+                });
                 history.replace("/invoices");
             }
         } catch ({ response }) {
@@ -78,7 +86,9 @@ const InvoicePage = ({ history, match }) => {
                     apiErrors[propertyPath] = message;
                 });
                 setErrors(apiErrors);
-                // notification des erreurs
+                toast.error("Des erreurs dans le formulaire.", {
+                    position: toast.POSITION.TOP_CENTER
+                });
             }
         }
     }

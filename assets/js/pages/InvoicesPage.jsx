@@ -4,6 +4,7 @@ import axios from 'axios';
 import moment from 'moment';
 import InvoicesAPI from '../services/invoicesAPI';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const STATUS_CLASSES = {
     PAID: "success",
@@ -26,7 +27,9 @@ const InvoicesPage = (props) => {
             const data = await InvoicesAPI.findAll();
             setInvoices(data);
         } catch(error) {
-            console.log(error.response);
+            toast.error("Erreur lors du chargement des factures.", {
+                position: toast.POSITION.TOP_CENTER
+            });
         }
     }
 
@@ -46,8 +49,14 @@ const InvoicesPage = (props) => {
         setInvoices(invoices.filter(invoice => invoice.id !== id));
         try {
             await InvoicesAPI.delete(id);
+            
+            toast.success("La facture a bien été supprimée.", {
+                position: toast.POSITION.TOP_CENTER
+            });
         } catch(error) {
-            console.log(error.response);
+            toast.error("Une erreur est survenue.", {
+                position: toast.POSITION.TOP_CENTER
+            });
             setInvoices(originalInvoices);
         }
     };

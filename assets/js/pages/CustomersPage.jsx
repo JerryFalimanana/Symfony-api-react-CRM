@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { async } from 'regenerator-runtime';
+import { toast } from 'react-toastify';
 import Pagination from '../components/Pagination';
 import CustomersAPI from '../services/customersAPI';
 
@@ -14,7 +14,9 @@ const CustomersPage = (props) => {
             const data = await CustomersAPI.findAll();
             setCustomers(data);
         } catch(error) {
-            console.log(error.response)
+            toast.error("Une erreur est survenue lors du chargement.", {
+                position: toast.POSITION.TOP_CENTER
+            });
         }
     };
 
@@ -26,9 +28,15 @@ const CustomersPage = (props) => {
         const originalCustomers = [...customers];
         setCustomers(customers.filter(customer => customer.id !== id));
         try {
-            await CustomersAPI.delete(id)
+            await CustomersAPI.delete(id);
+            toast.success("Le client a bien été supprimé.", {
+                position: toast.POSITION.TOP_CENTER
+            });
         } catch(error) {
             setCustomers(originalCustomers);
+            toast.error("Une erreur est survenue lors de la suppression.", {
+                position: toast.POSITION.TOP_CENTER
+            });
         }
     };
 
